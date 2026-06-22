@@ -1,0 +1,1070 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stevee ppl Lite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0070ba">
+
+<!-- iOS support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="image/png">
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background-color: #fff;
+    }
+
+.success-banner {
+  display: none;
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #000;
+  padding: 18px 40px; /* Increased padding */
+  min-width: 280px; /* Optional: Ensure it's wide */
+  border-radius: 12px;
+  border: 1px solid #ccc; /* Added card outline */
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+  font-size: 15px;
+  font-weight: 500;
+  z-index: 9;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+    .success-banner.show {
+      display: block;
+      opacity: 1;
+    }
+    .success-banner span {
+      display: block;
+      font-size: 13px;
+      color: #444;
+      margin-top: 5px;
+    }
+  
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 15px 15px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .paypal-logo {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #003087;
+      margin-top: 5px;
+    }
+    .paypal-logo img {
+      height: 20px;
+    }
+    .profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+
+    .top-box {
+      background-color: white;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .balance-title {
+      color: gray;
+      font-size: 14px;
+    }
+    .balance-amount {
+      font-size: 26px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .send-btn {
+      background-color: #0070ba;
+      color: #fff;
+    }
+    .request-btn {
+      background-color: #eee;
+      margin-left: 10px;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 15px;
+    }
+    .action-btn {
+      flex: 1;
+      background-color: #f6f7f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+    }
+    .action-btn img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
+    .recent-section {
+      margin: 0 10px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .recent-title {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .user-tag {
+      font-weight: bold;
+    }
+    .amount {
+      color: red;
+      font-weight: bold;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #fff;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+    }
+    .nav-item {
+      text-align: center;
+      font-size: 14px;
+      color: #444;
+    }
+    .nav-item.active {
+      color: #0070ba;
+    }
+    .balance-card {
+  background-color: white;
+  margin: 15px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.balance-text {
+  color: gray;
+  font-size: 15px;
+}
+
+.balance-amount {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 8px 0 20px;
+}
+
+.balance-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+
+.send-btn, .request-btn {
+  min-width: auto;
+  max-width: 100%;
+}
+
+
+.send-btn {
+  background-color: #0070ba;
+  color: white;
+  padding: 8px 20px; /* Adjust as needed */
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  border: 2px solid #0070ba;
+  transition: background-color 0.2s ease;
+}
+
+
+.send-btn:hover {
+  background-color: #005a99;
+}
+
+
+
+.request-btn {
+  background-color: white;
+  color: #000000;
+  border: 2px solid #ffffff;
+}
+
+.request-btn:hover {
+  background-color: #f0f8ff;
+}
+
+
+ .activity-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+}
+.activity-icon {
+  width: 38px;
+  height: 38px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  padding: 8px;
+}
+.activity-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+.user-tag {
+  font-weight: 600;
+  color: #333;
+}
+.activity-info small {
+  color: #888;
+  font-size: 12px;
+  margin-top: 2px;
+}
+.amount {
+  font-weight: bold;
+  color: #e60000;
+  font-size: 16px;
+}
+
+
+
+.activity-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  padding: 8px 0;
+  border-top: 1px solid #ccc;
+  z-index: 10;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  color: #444;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 3px;
+  filter: grayscale(100%) brightness(0.8);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.nav-item.active .nav-icon {
+  filter: none;
+  opacity: 1;
+}
+
+
+.nav-item.active {
+  color: #0070ba;
+}
+
+
+
+.card-section {
+  background-color: white;
+  margin: 15px;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.action-btn {
+  flex: 1;
+  background-color: #f6f7f8;
+  padding: 14px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #ddd;
+}
+
+.action-btn img {
+  width: 26px;
+  height: 26px;
+  margin-bottom: 8px;
+}
+
+.balance-card {
+  background-color: white;
+  margin: 15px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+}
+.success-banner {
+  display: none;
+  position: fixed;
+  top: 70px; /* 🔽 push down below header */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #000;
+  padding: 18px 40px;
+  min-width: 280px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+  font-weight: 500;
+  z-index: 9999;
+  text-align: center;
+  opacity: 0;
+}
+
+.success-banner.show {
+  display: block;
+  animation: dropDown 0.6s ease forwards;
+}
+
+@keyframes dropDown {
+  0%   { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+
+.balance-amount.animate {
+  display: inline-block; /* needed for transform */
+  animation: balanceChange 2s ease;
+}
+
+.modal {
+  display: none; 
+  position: fixed; 
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #0070ba;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#cancelBtn {
+  background: #ccc;
+}
+
+#confirmBtn {
+  background: #0070ba;
+  color: #fff;
+}
+.confirmation-banner {
+  display: none;
+  margin: 10px 15px;
+  padding: 12px 18px;
+  background: #e6f9f0;
+  color: #0a7a43;
+  border: 1px solid #b5e5c9;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: fadeSlide 0.4s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-box {
+  padding: 20px;
+  max-width: 400px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.profile-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-header p {
+  margin: 3px 0 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.profile-section h4 {
+  margin: 15px 0 10px;
+  font-size: 15px;
+  color: #0070ba;
+}
+
+.profile-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-btn:hover {
+  background: #eef6fc;
+}
+
+
+
+
+.profile-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tab-btn.active {
+  color: #0070ba;
+  border-bottom: 2px solid #0070ba;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+
+/* 🌙 Dark Mode */
+body.dark {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+body.dark header,
+body.dark .top-box,
+body.dark .recent-section,
+body.dark .balance-card,
+body.dark .card-section,
+body.dark .activity-card,
+body.dark .modal-content {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-color: #333;
+}
+
+body.dark .nav-item {
+  color: #bbb;
+}
+body.dark .nav-item.active {
+  color: #4da3ff;
+}
+
+body.dark .profile-btn {
+  background: #2a2a2a;
+  border-color: #444;
+  color: #f1f1f1;
+}
+body.dark .profile-btn:hover {
+  background: #3a3a3a;
+}
+
+
+
+
+
+.device-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  font-size: 14px;
+}
+.device-item.current {
+  background: #e6f4ff;
+  border-color: #4da3ff;
+  font-weight: bold;
+}
+.device-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ff4d4d;
+  color: #fff;
+}
+.device-btn:hover {
+  background: #d93636;
+}
+
+body.dark .device-item { background:#2a2a2a; border-color:#444; }
+body.dark .device-item.current { background:#223344; border-color:#4da3ff; }
+body.dark .device-btn { background:#ff6666; color:#0a0a0a; }
+
+  </style>
+</head>
+<body>
+
+
+
+  <div class="success-banner" id="successBanner">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/White_check.svg/1024px-White_check.svg.png" 
+       alt="success"
+       style="width:40px;height:40px;margin:0 auto 8px;transform:scale(0);animation:popIn 0.5s ease forwards 0.4s;">
+  Payment sent successfully
+  <span>9000.00 EUR sent to @illiachinchilla</span>
+</div>
+
+    <header>
+  <div class="paypal-logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal Logo">
+    <span></span>
+  </div>
+  <img src="xLNlD6cq_400x400.jpg" alt="profile" class="profile-pic" />
+</header>
+
+
+ <div class="balance-card">
+  <div class="balance-text">PayPal balance</div>
+  <div class="balance-amount" id="balanceDisplay">€19,767,352.00</div>
+
+  <div class="balance-buttons">
+<button class="btn send-btn"onclick="window.location.href='2nd.html'">Send</button>
+  <button class="btn btn-primary">Request</button>
+</div>
+</div>
+
+
+<div class="card-section">
+  <div class="card-title">Quick actions</div>
+  <div class="actions">
+    <div class="action-btn">
+      <img src="store-marketplace-shopping-black-icon-116420740011gkdctmmkd.png" alt="Store Icon">
+      Pay in store
+    </div>
+    <div class="action-btn" id="bankTransferBtn">
+      <img src="Untitled design (22).png" alt="Bank Icon">
+      Transfer to bank
+    </div>
+  </div>
+</div>
+
+  </div>
+
+<div class="recent-section">
+  <div class="recent-title">
+    <span>Recent activity</span>
+    <a href="#" onclick="clearHistory()">Clear All</a>
+  </div>
+  <div id="activityContainer"></div>
+</div>
+
+
+  <div class="bottom-nav">
+  <div class="nav-item active">
+    <img src="Untitled design (7).png" class="nav-icon" alt="Home">
+    <div>Home</div>
+  </div>
+  <div class="nav-item">
+    <img src="Untitled design (8).png" class="nav-icon" alt="Wallet">
+    <div>Wallet</div>
+  </div>
+  <div class="nav-item">
+    <img src="Untitled design (9).png" class="nav-icon" alt="Payments">
+    <div>Payments</div>
+  </div>
+  <div class="nav-item">
+    <img src="Untitled design (10).png" class="nav-icon" alt="Profile">
+    <div>Profile</div>
+  </div>
+</div>
+<!-- Card Payment Modal -->
+<div id="cardModal" class="modal">
+  <div class="modal-content">
+    <h3>Add Money with Card</h3>
+    <label>Card Number</label>
+    <input type="text" placeholder="1234 5678 9012 3456">
+
+    <label>Expiry Date</label>
+    <input type="text" placeholder="MM/YY">
+
+    <label>CVV</label>
+    <input type="password" placeholder="***">
+
+    <label>Amount (€)</label>
+    <input type="number" id="depositAmount" placeholder="1000">
+
+    <div class="modal-actions">
+      <button id="cancelBtn">Cancel</button>
+      <button id="confirmBtn">Add Money</button>
+    </div>
+  </div>
+</div>
+<div id="addMoneyBanner" class="confirmation-banner">
+  ✅ €1000 added successfully with card
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal">
+  <div class="modal-content profile-box">
+    
+    <!-- Tabs -->
+    <div class="profile-tabs">
+      <button class="tab-btn active" data-tab="accountTab">Account</button>
+      <button class="tab-btn" data-tab="securityTab">Security</button>
+      <button class="tab-btn" data-tab="transactionsTab">Transactions</button>
+      <button class="tab-btn" data-tab="devicesTab">Devices</button>
+
+    </div>
+<div id="devicesTab" class="tab-content">
+  <h4>Active Devices</h4>
+  <div id="devicesList"></div>
+</div>
+
+    <!-- Tab Content -->
+    <div id="accountTab" class="tab-content active">
+      <div class="profile-header">
+        <img src="xLNlD6cq_400x400.jpg" alt="Profile" class="profile-avatar">
+        <div>
+          <h3>John Doe</h3>
+          <p>johndoe@email.com</p>
+        </div>
+      </div>
+      <button class="profile-btn">Change Profile Picture</button>
+      <button class="profile-btn">Settings</button>
+    </div>
+
+    <div id="securityTab" class="tab-content">
+      <h4>Security Settings</h4>
+      <button class="profile-btn">Change Profile Picture</button>
+<button class="profile-btn" id="darkModeToggle">🌙 Toggle Dark Mode</button>
+<button class="profile-btn">Settings</button>
+    </div>
+
+    <div id="transactionsTab" class="tab-content">
+      <h4>Recent Transactions</h4>
+      <div id="profileTransactions"></div>
+    </div>
+
+    <!-- Close -->
+    <div class="modal-actions">
+      <button id="closeProfileBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+  const banner = document.getElementById("successBanner");
+  const query = new URLSearchParams(window.location.search);
+  const amount = query.get("amount");
+  const to = query.get("to");
+
+  // ✅ Show banner if redirected from payment
+  if (query.get("success") === "true" && amount && to) {
+    banner.innerHTML = `Payment sent successfully<br><span>€${amount} sent to ${to}</span>`;
+    banner.classList.add("show");
+    setTimeout(() => banner.classList.remove("show"), 5000);
+  }
+
+  // ✅ Load and show recent history
+  const history = JSON.parse(localStorage.getItem("history")) || [];
+  const activityContainer = document.getElementById("activityContainer");
+  activityContainer.innerHTML = ""; // clear first
+
+  history.slice(0, 9).forEach(item => {
+    const div = document.createElement("div");
+    div.className = "activity-card";
+    div.innerHTML = `
+      <img src="Untitled design (6).png" alt="icon" class="activity-icon">
+      <div class="activity-info">
+        <span class="user-tag">${item.name}</span>
+        <small>${item.date}</small>
+      </div>
+      <span class="amount">€${item.amount}</span>
+    `;
+    activityContainer.appendChild(div);
+  });
+
+  // Optional: Clear all
+  function clearHistory() {
+    localStorage.removeItem("history");
+    activityContainer.innerHTML = "";
+  }
+
+  // Cleanup temporary name
+  localStorage.removeItem("recipientName");
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log("✅ Service Worker registered", reg))
+      .catch(err => console.warn("❌ Service Worker failed", err));
+  }
+</script>
+
+<script>
+const balanceEl = document.getElementById("balanceDisplay");
+
+// Load saved balance or default
+let savedBalance = parseFloat(localStorage.getItem("paypalBalance") || "19747352.00");
+
+// Show the balance when page loads
+balanceEl.textContent = `€${savedBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+// Smooth animation function
+function animateBalance(start, end, duration = 2000) {
+  const stepTime = 20;
+  const steps = duration / stepTime;
+  const increment = (end - start) / steps;
+  let current = start;
+  let count = 0;
+
+  const interval = setInterval(() => {
+    current += increment;
+    balanceEl.textContent = `€${current.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    count++;
+    if (count >= steps) {
+      clearInterval(interval);
+      balanceEl.textContent = `€${end.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+  }, stepTime);
+}
+
+// Example: deduct function (if you use it elsewhere)
+function deductAmount(amount) {
+  const current = savedBalance;
+  const newBalance = current - amount;
+  savedBalance = newBalance;
+  localStorage.setItem("paypalBalance", newBalance.toFixed(2));
+
+  // number counting animation (2s)
+  animateBalance(current, newBalance, 2000);
+
+  // visual bounce animation (2s)
+  balanceEl.classList.remove("animate"); // reset
+  void balanceEl.offsetWidth; // force reflow to restart animation
+  balanceEl.classList.add("animate");
+}
+
+
+const modal = document.getElementById("cardModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const confirmBtn = document.getElementById("confirmBtn");
+const depositInput = document.getElementById("depositAmount");
+
+// Open modal when clicking "Transfer to bank"
+document.getElementById("bankTransferBtn").addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+// Close modal
+cancelBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+// Confirm adding money
+confirmBtn.addEventListener("click", () => {
+  const amount = parseFloat(depositInput.value) || 0;
+  if (amount <= 0) {
+    alert("Enter a valid amount");
+    return;
+  }
+
+  // Load current balance
+  const current = parseFloat(localStorage.getItem("paypalBalance") || savedBalance);
+
+  const newBalance = current + amount;
+  savedBalance = newBalance;
+  localStorage.setItem("paypalBalance", newBalance.toFixed(2));
+
+  // Animate balance
+  animateBalance(current, newBalance, 2000);
+
+  balanceEl.classList.remove("animate");
+  void balanceEl.offsetWidth;
+  balanceEl.classList.add("animate");
+
+  modal.style.display = "none";
+});
+
+const addMoneyBanner = document.getElementById("addMoneyBanner");
+
+confirmBtn.addEventListener("click", () => {
+  const amount = parseFloat(depositInput.value) || 0;
+  if (amount <= 0) {
+    alert("Enter a valid amount");
+    return;
+  }
+
+  // Load current balance
+  const current = parseFloat(localStorage.getItem("paypalBalance") || savedBalance);
+
+  const newBalance = current + amount;
+  savedBalance = newBalance;
+  localStorage.setItem("paypalBalance", newBalance.toFixed(2));
+
+  // Animate balance
+  animateBalance(current, newBalance, 2000);
+
+  balanceEl.classList.remove("animate");
+  void balanceEl.offsetWidth;
+  balanceEl.classList.add("animate");
+
+  modal.style.display = "none";
+
+  // ✅ Show confirmation banner
+  addMoneyBanner.textContent = `✅ €${amount.toFixed(2)} added successfully with card`;
+  addMoneyBanner.style.display = "block";
+
+  // Hide automatically after 4s
+  setTimeout(() => {
+    addMoneyBanner.style.display = "none";
+  }, 4000);
+});
+
+
+const profileModal = document.getElementById("profileModal");
+const closeProfileBtn = document.getElementById("closeProfileBtn");
+
+// Open profile when clicking profile picture or nav "Profile"
+document.querySelector(".profile-pic").addEventListener("click", () => {
+  profileModal.style.display = "flex";
+});
+document.querySelectorAll(".nav-item")[3].addEventListener("click", () => {
+  profileModal.style.display = "flex";
+});
+
+// Close button
+closeProfileBtn.addEventListener("click", () => {
+  profileModal.style.display = "none";
+});
+
+// Optional: click outside to close
+window.addEventListener("click", (e) => {
+  if (e.target === profileModal) {
+    profileModal.style.display = "none";
+  }
+});
+
+
+// Tab switching
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabContents = document.querySelectorAll(".tab-content");
+
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    tabButtons.forEach(b => b.classList.remove("active"));
+    tabContents.forEach(c => c.classList.remove("active"));
+
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+  });
+});
+
+// Load transactions inside profile
+const profileTransactions = document.getElementById("profileTransactions");
+const historyData = JSON.parse(localStorage.getItem("history")) || [];
+
+if (historyData.length === 0) {
+  profileTransactions.innerHTML = "<p>No recent transactions.</p>";
+} else {
+  historyData.slice(0, 5).forEach(item => {
+    const div = document.createElement("div");
+    div.className = "activity-card";
+    div.innerHTML = `
+      <img src="Untitled design (6).png" alt="icon" class="activity-icon">
+      <div class="activity-info">
+        <span class="user-tag">${item.name}</span>
+        <small>${item.date}</small>
+      </div>
+      <span class="amount">€${item.amount}</span>
+    `;
+    profileTransactions.appendChild(div);
+  });
+}
+
+
+// 🌙 Dark Mode Toggle
+const darkModeToggle = document.getElementById("darkModeToggle");
+
+// Load saved theme
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+// Toggle on button click
+darkModeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  if (document.body.classList.contains("dark")) {
+    localStorage.setItem("theme", "dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
+});
+
+
+
+
+</script>
+
+</html>

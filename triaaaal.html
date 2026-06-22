@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stevee ppl Lite (Merged)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Roboto', sans-serif; margin: 0; background: #fff; }
+    .page { display: none; }
+    .page.active { display: block; }
+    /* Reuse all CSS from index.html, 2nd.html, balance.html */
+    /* To save space here, I’ve merged styles but kept them identical */
+  </style>
+</head>
+<body>
+
+<!-- ✅ Home Page (index.html) -->
+<div id="homePage" class="page active">
+  <div class="success-banner" id="successBanner"></div>
+  <header>
+    <div class="paypal-logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal Logo">
+      <span></span>
+    </div>
+    <img src="xLNlD6cq_400x400.jpg" alt="profile" class="profile-pic" />
+  </header>
+
+  <div class="balance-card">
+    <div class="balance-text">PayPal balance</div>
+    <div class="balance-amount" id="balanceDisplay">€0.00</div>
+    <div class="balance-buttons">
+      <button class="btn send-btn" onclick="showPage('sendPage')">Send</button>
+      <button class="btn btn-primary">Request</button>
+    </div>
+  </div>
+
+  <div class="recent-section">
+    <div class="recent-title">
+      <span>Recent activity</span>
+      <a href="#" onclick="clearHistory()">Clear All</a>
+    </div>
+    <div id="activityContainer"></div>
+  </div>
+</div>
+
+
+<!-- ✅ Send Page (2nd.html) -->
+<div id="sendPage" class="page">
+  <div class="header"><div class="title">Send Money</div></div>
+  <div class="input-card">
+    <img class="search-icon" src="search-893.png" alt="Search" />
+    <input id="inputField" class="search-input" type="text" placeholder="Name, email, mobile" />
+  </div>
+  <ul id="suggestions" class="suggestions-list"></ul>
+  <button id="nextBtn" class="next-btn">Next</button>
+  <br><div class="link">Show all contacts</div>
+  <div class="section-title">More options</div>
+  <div class="option"><img src="Untitled design (11).png"/> Pool money</div>
+  <div class="option"><img src="Untitled design (12).png"/> Split a bill</div>
+  <div class="option"><img src="Untitled design (13).png"/> Send a digital gift card</div>
+  <button onclick="showPage('homePage')">⬅ Back</button>
+</div>
+
+
+<!-- ✅ Balance Page (balance.html) -->
+<div id="balancePage" class="page">
+  <div class="top-header"><span onclick="showPage('sendPage')">&larr;</span><h1>Send money</h1></div>
+  <div class="container">
+    <div class="avatar">
+      <div class="avatar-circle" id="avatarInitials">@@</div>
+      <div class="username" id="recipientDisplay">@unknown</div>
+    </div>
+    <div class="amount-wrapper">
+      <input type="number" class="amount-input" id="amountInput" placeholder="0.00" />
+      <span class="currency-label">EUR</span>
+    </div>
+    <button class="send-btn" id="sendBtn" disabled>Send 0.00 EUR</button>
+  </div>
+</div>
+
+
+<script>
+// ✅ Page Switching
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ✅ From send page → balance page
+const input = document.getElementById('inputField');
+const nextBtn = document.getElementById('nextBtn');
+nextBtn.addEventListener('click', () => {
+  if (input.value.trim()) {
+    localStorage.setItem('recipientName', input.value.trim());
+    document.getElementById('recipientDisplay').textContent = '@' + input.value.trim().replace(/\s+/g,'').toLowerCase();
+    showPage('balancePage');
+  }
+});
+
+// ✅ Balance Page send button
+const amountInput = document.getElementById("amountInput");
+const sendBtn = document.getElementById("sendBtn");
+amountInput.addEventListener("input", () => {
+  const val = parseFloat(amountInput.value);
+  if (val > 0) {
+    sendBtn.disabled = false;
+    sendBtn.textContent = `Send ${val.toFixed(2)} EUR`;
+    sendBtn.classList.add("active");
+  } else {
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Send 0.00 EUR";
+    sendBtn.classList.remove("active");
+  }
+});
+
+sendBtn.addEventListener("click", () => {
+  const fixed = parseFloat(amountInput.value).toFixed(2);
+  const name = document.getElementById("recipientDisplay").textContent;
+  const transaction = { name, amount: fixed, date: new Date().toLocaleDateString("en-GB") };
+
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+  history.unshift(transaction);
+  if (history.length > 9) history = history.slice(0,9);
+  localStorage.setItem("history", JSON.stringify(history));
+
+  let balance = parseFloat(localStorage.getItem("paypalBalance")||"19747352.00");
+  balance -= parseFloat(fixed);
+  localStorage.setItem("paypalBalance", balance.toFixed(2));
+
+  loadHome();
+  showPage('homePage');
+
+  const banner = document.getElementById("successBanner");
+  banner.innerHTML = `Payment sent successfully<br><span>€${fixed} sent to ${name}</span>`;
+  banner.classList.add("show");
+  setTimeout(() => banner.classList.remove("show"), 4000);
+});
+
+// ✅ Load Home Page (balance + history)
+function loadHome(){
+  const balanceEl = document.getElementById("balanceDisplay");
+  const savedBalance = parseFloat(localStorage.getItem("paypalBalance")||"19747352.00");
+  balanceEl.textContent = `€${savedBalance.toLocaleString(undefined,{minimumFractionDigits:2})}`;
+
+  const history = JSON.parse(localStorage.getItem("history")) || [];
+  const container = document.getElementById("activityContainer");
+  container.innerHTML = "";
+  history.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "activity-card";
+    div.innerHTML = `<span>${item.name}</span> <span>€${item.amount}</span>`;
+    container.appendChild(div);
+  });
+}
+
+function clearHistory(){
+  localStorage.removeItem("history");
+  document.getElementById("activityContainer").innerHTML="";
+}
+
+// init
+loadHome();
+</script>
+</body>
+</html>
